@@ -42,4 +42,17 @@ class GetMeetingsResponse extends BaseResponse
 
         return $meetings;
     }
+
+    /**
+     * @return \SimpleXMLElement[]
+     */
+    public function getMeetingsXml(){
+        if ($this->meetings === null) {
+            $this->meetings = [];
+            foreach ($this->rawXml->meetings->children() as $meetingXml) {
+                $this->meetings[] = $meetingXml;
+            }
+        }
+        return $this->meetings;
+    }
 }

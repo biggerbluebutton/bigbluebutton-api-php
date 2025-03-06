@@ -75,6 +75,8 @@ class Meeting
 
     private bool $isBreakout;
 
+    private $parentMeetingID;
+
     /**
      * Meeting constructor.
      */
@@ -104,6 +106,7 @@ class Meeting
         $this->maxUsers              = (int) $xml->maxUsers->__toString();
         $this->moderatorCount        = (int) $xml->moderatorCount->__toString();
         $this->isBreakout            = 'true' === $xml->isBreakout->__toString();
+        $this->parentMeetingID       = $xml->parentMeetingID->__toString();
     }
 
     public function getMeetingId(): string
@@ -282,5 +285,9 @@ class Meeting
     public function isBreakout(): bool
     {
         return $this->isBreakout;
+    }
+
+    public function getParentMeetingId() {
+        return $this->parentMeetingID;
     }
 }

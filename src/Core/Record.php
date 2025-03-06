@@ -49,11 +49,15 @@ class Record
      * @deprecated deprecated since 2.1.2
      */
     private int $playbackLength;
+    private $internalMeetingID;
+    private $participants;
+    private $size;
 
     /**
      * @var array<string, string>
      */
     private array $metas;
+
 
     public function __construct(\SimpleXMLElement $xml)
     {
@@ -68,6 +72,11 @@ class Record
         $this->playbackType   = $xml->playback->format->type->__toString();
         $this->playbackUrl    = $xml->playback->format->url->__toString();
         $this->playbackLength = (int) $xml->playback->format->length->__toString();
+
+        // custom params
+        $this->internalMeetingID = $xml->internalMeetingID->__toString();
+        $this->participants = $xml->participants->__toString();
+        $this->size = $xml->size->__toString();
 
         foreach ($xml->metadata->children() as $meta) {
             $this->metas[$meta->getName()] = $meta->__toString();
@@ -147,13 +156,35 @@ class Record
     public function getFormats(): array
     {
         $formats = [];
-
         foreach ($this->rawXml->playback->format as $formatXml) {
             if ($formatXml) {
                 $formats[] = new Format($formatXml);
             }
         }
-
         return $formats;
+    }
+
+    /**
+     * @return string
+     */
+    public function getInternalMeetingID()
+    {
+        return $this->internalMeetingID;
+    }
+
+    /**
+     * @return string
+     */
+    public function getParticipants()
+    {
+        return $this->participants;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSize()
+    {
+        return intval($this->size);
     }
 }
