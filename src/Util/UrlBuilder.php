@@ -35,6 +35,7 @@ use BigBlueButton\Parameters\IsMeetingRunningParameters;
 use BigBlueButton\Parameters\JoinMeetingParameters;
 use BigBlueButton\Parameters\PublishRecordingsParameters;
 use BigBlueButton\Parameters\PutRecordingTextTrackParameters;
+use BigBlueButton\Parameters\SendChatMessageParameters;
 use BigBlueButton\Parameters\UpdateRecordingsParameters;
 
 class UrlBuilder
@@ -120,7 +121,10 @@ class UrlBuilder
     {
         return $this->buildUrl(ApiMethod::END, $endParams->getHTTPQuery());
     }
-
+    public function getSendChatMessageUrl(SendChatMessageParameters $sendChatMessageParameters): string
+    {
+        return $this->buildUrl(ApiMethod::SEND_CHAT_MESSAGE, $sendChatMessageParameters->getHTTPQuery());
+    }
     public function getInsertDocumentUrl(InsertDocumentParameters $insertDocumentParameters): string
     {
         return $this->buildUrl(ApiMethod::INSERT_DOCUMENT, $insertDocumentParameters->getHTTPQuery());

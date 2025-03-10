@@ -25,6 +25,7 @@ use BigBlueButton\Exceptions\BadResponseException;
 use BigBlueButton\Parameters\CreateMeetingParameters;
 use BigBlueButton\Parameters\DeleteRecordingsParameters;
 use BigBlueButton\Parameters\EndMeetingParameters;
+use BigBlueButton\Parameters\SendChatMessageParameters;
 use BigBlueButton\Parameters\GetMeetingInfoParameters;
 use BigBlueButton\Parameters\GetRecordingsParameters;
 use BigBlueButton\Parameters\GetRecordingTextTracksParameters;
@@ -40,6 +41,7 @@ use BigBlueButton\Responses\ApiVersionResponse;
 use BigBlueButton\Responses\CreateMeetingResponse;
 use BigBlueButton\Responses\DeleteRecordingsResponse;
 use BigBlueButton\Responses\EndMeetingResponse;
+use BigBlueButton\Responses\SendChatMessageResponse;
 use BigBlueButton\Responses\GetMeetingInfoResponse;
 use BigBlueButton\Responses\GetMeetingsResponse;
 use BigBlueButton\Responses\GetRecordingsResponse;
@@ -193,6 +195,15 @@ class BigBlueButton
         return new EndMeetingResponse($xml);
     }
 
+    /**
+     * @throws BadResponseException|\RuntimeException
+     */
+    public function sendChatMessage(SendChatMessageParameters $sendChatMessageParams): SendChatMessageResponse
+    {
+        $xml = $this->processXmlResponse($this->getUrlBuilder()->getSendChatMessageUrl($sendChatMessageParams));
+
+        return new SendChatMessageResponse($xml);
+    }
     /**
      * @deprecated Replaced by same function-name provided by UrlBuilder-class
      */

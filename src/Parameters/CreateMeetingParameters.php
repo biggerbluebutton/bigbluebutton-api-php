@@ -47,6 +47,8 @@ class CreateMeetingParameters extends MetaParameters
 
     private ?string $webVoice = null;
 
+    private ?string $loginUrl = null;
+
     private ?string $logoutUrl = null;
 
     private ?int $maxParticipants = null;
@@ -66,8 +68,6 @@ class CreateMeetingParameters extends MetaParameters
     private ?bool $webcamsOnlyForModerator = null;
 
     private ?string $logo = null;
-
-    private ?string $copyright = null;
 
     private ?bool $muteOnStart = null;
 
@@ -129,11 +129,6 @@ class CreateMeetingParameters extends MetaParameters
 
     private ?bool $meetingKeepEvents = null;
 
-    /**
-     * @deprecated Removed in 2.5, temporarily still handled, please transition to disabledFeatures.
-     */
-    private ?bool $breakoutRoomsEnabled = null;
-
     private ?bool $breakoutRoomsRecord = null;
 
     private ?bool $breakoutRoomsPrivateChatEnabled = null;
@@ -162,8 +157,6 @@ class CreateMeetingParameters extends MetaParameters
      */
     private array $disabledFeaturesExclude = [];
 
-    private ?bool $recordFullDurationMedia = null;
-
     /**
      * @var array<int, array<string, mixed>>
      */
@@ -174,6 +167,20 @@ class CreateMeetingParameters extends MetaParameters
     private ?string $presentationUploadExternalUrl = null;
 
     private ?string $presentationUploadExternalDescription = null;
+
+    private ?bool $recordFullDurationMedia = null;
+
+    private ?string $preUploadedPresentation = null;
+
+    private ?string $preUploadedPresentationName = null;
+
+    private ?bool $allowOverrideClientSettingsOnCreateCall = null;
+
+    private ?string $clientSettingsOverride = null;
+
+    private ?bool $allowPromoteGuestToModerator = null;
+
+    private ?string $pluginManifests = null;
 
     /**
      * CreateMeetingParameters constructor.
@@ -339,6 +346,21 @@ class CreateMeetingParameters extends MetaParameters
     public function setLogoutUrl(string $logoutUrl): self
     {
         $this->logoutUrl = $logoutUrl;
+
+        return $this;
+    }
+
+    public function getLoginUrl(): ?string
+    {
+        return $this->loginUrl;
+    }
+
+    /**
+     * Enables third-party applications to provide a URL that users can access during a meeting to join the session directly.
+     */
+    public function setLoginUrl(string $loginUrl): self
+    {
+        $this->loginUrl = $loginUrl;
 
         return $this;
     }
@@ -671,18 +693,6 @@ class CreateMeetingParameters extends MetaParameters
     public function setMeetingKeepEvents(bool $meetingKeepEvents): self
     {
         $this->meetingKeepEvents = $meetingKeepEvents;
-
-        return $this;
-    }
-
-    public function getCopyright(): ?string
-    {
-        return $this->copyright;
-    }
-
-    public function setCopyright(string $copyright): self
-    {
-        $this->copyright = $copyright;
 
         return $this;
     }
@@ -1022,30 +1032,6 @@ class CreateMeetingParameters extends MetaParameters
         return $this;
     }
 
-    /**
-     * @deprecated Removed in 2.5, temporarily still handled, please transition to disabledFeatures.
-     */
-    public function isBreakoutRoomsEnabled(): ?bool
-    {
-        return $this->breakoutRoomsEnabled;
-    }
-
-    /**
-     * If set to false, breakout rooms will be disabled.
-     *
-     * Default: true
-     *
-     * @param mixed $breakoutRoomsEnabled
-     *
-     * @deprecated Removed in 2.5, temporarily still handled, please transition to disabledFeatures.
-     */
-    public function setBreakoutRoomsEnabled($breakoutRoomsEnabled): self
-    {
-        $this->breakoutRoomsEnabled = $breakoutRoomsEnabled;
-
-        return $this;
-    }
-
     public function isBreakoutRoomsRecord(): ?bool
     {
         return $this->breakoutRoomsRecord;
@@ -1300,27 +1286,6 @@ class CreateMeetingParameters extends MetaParameters
         return $this;
     }
 
-    public function getRecordFullDurationMedia(): ?bool
-    {
-        return $this->recordFullDurationMedia;
-    }
-
-    /**
-     * Controls whether media (audio, cameras and screen sharing) should be captured on their full duration
-     * if the meeting's recorded property is true (recorded=true). Default is false: only captures media while
-     * recording is running in the meeting.
-     *
-     * Default: false
-     *
-     * @since 2.6.9
-     */
-    public function setRecordFullDurationMedia(bool $recordFullDurationMedia): self
-    {
-        $this->recordFullDurationMedia = $recordFullDurationMedia;
-
-        return $this;
-    }
-
     /**
      * @return array<int, array<string, mixed>>
      */
@@ -1397,6 +1362,137 @@ class CreateMeetingParameters extends MetaParameters
         return $this;
     }
 
+    public function getRecordFullDurationMedia(): ?bool
+    {
+        return $this->recordFullDurationMedia;
+    }
+
+    /**
+     * Controls whether media (audio, cameras and screen sharing) should be captured on their full duration
+     * if the meeting's recorded property is true (recorded=true). Default is false: only captures media while
+     * recording is running in the meeting.
+     *
+     * Default: false
+     *
+     * @since 2.6.9
+     */
+    public function setRecordFullDurationMedia(bool $recordFullDurationMedia): self
+    {
+        $this->recordFullDurationMedia = $recordFullDurationMedia;
+
+        return $this;
+    }
+
+    public function getPreUploadedPresentation(): ?string
+    {
+        return $this->preUploadedPresentation;
+    }
+
+    /**
+     * If passed with a valid presentation file url, this presentation will override the default presentation. To only upload but not set as default
+     * @param string $preUploadedPresentation
+     * @return CreateMeetingParameters
+     */
+    public function setPreUploadedPresentation(string $preUploadedPresentation): self
+    {
+        $this->preUploadedPresentation = $preUploadedPresentation;
+
+        return $this;
+    }
+
+    public function getPreUploadedPresentationName(): ?string
+    {
+        return $this->preUploadedPresentationName;
+    }
+
+    /**
+     * If passed it will use this string as the name of the presentation uploaded via preUploadedPresentation
+     * @param string $preUploadedPresentationName
+     * @return CreateMeetingParameters
+     */
+    public function setPreUploadedPresentationName(string $preUploadedPresentationName): self
+    {
+        $this->preUploadedPresentationName = $preUploadedPresentationName;
+
+        return $this;
+    }
+
+
+    public function getAllowOverrideClientSettingsOnCreateCall(): ?bool
+    {
+        return $this->allowOverrideClientSettingsOnCreateCall;
+    }
+
+    /**
+     * Whether to allow clientSettingsOverride to be included in the body of a POST request.
+     * Because the body of the post request is not signed by the checksum,
+     * this parameter is set to false by default.
+     * If you set this to true, you must make sure that the signed parameters of the create API request are not visible to users.
+     * Default: false
+     *
+     * @param bool $allowOverrideClientSettingsOnCreateCall
+     * @return CreateMeetingParameters
+     * @since 3.0.0
+     */
+    public function setAllowOverrideClientSettingsOnCreateCall(bool $allowOverrideClientSettingsOnCreateCall): self
+    {
+        $this->allowOverrideClientSettingsOnCreateCall = $allowOverrideClientSettingsOnCreateCall;
+        return $this;
+    }
+
+
+    public function getClientSettingsOverride(): ?string
+    {
+        return $this->clientSettingsOverride;
+    }
+
+    /**
+     * A data structure containing settings which override values from the HTML5 client's settings.yml file.
+     * This data can also be provided in the body of a POST request, see clientSettingsOverride for details.
+     * @param string $clientSettingsOverride
+     * @return CreateMeetingParameters
+     */
+    public function setClientSettingsOverride(string $clientSettingsOverride): self
+    {
+        $this->clientSettingsOverride = $clientSettingsOverride;
+
+        return $this;
+    }
+
+    public function getAllowPromoteGuestToModerator(): ?bool
+    {
+        return $this->allowPromoteGuestToModerator;
+    }
+
+    /**
+     * If passed as true, we allow moderators to promote guests to moderators even if the authenticatedGuest config is enabled.
+     * The defaultAllowPromoteGuestToModerator configuration sets this behaviour globally for all meetings if no api parameter is passed
+     * @param bool $allowPromoteGuestToModerator
+     * @return CreateMeetingParameters
+     */
+    public function setAllowPromoteGuestToModerator(bool $allowPromoteGuestToModerator): self
+    {
+        $this->allowPromoteGuestToModerator = $allowPromoteGuestToModerator;
+        return $this;
+    }
+
+
+    public function getPluginManifests(): ?string
+    {
+        return $this->pluginManifests;
+    }
+
+    /**
+     * A list of the BigBlueButton client plugins you want included for the specific session
+     * @param string $pluginManifests
+     * @return CreateMeetingParameters
+     */
+    public function setPluginManifests(string $pluginManifests): self
+    {
+        $this->pluginManifests = $pluginManifests;
+        return $this;
+    }
+
     public function getHTTPQuery(): string
     {
         $queries = [
@@ -1404,58 +1500,70 @@ class CreateMeetingParameters extends MetaParameters
             'meetingID'                              => $this->meetingId,
             'attendeePW'                             => $this->attendeePassword,
             'moderatorPW'                            => $this->moderatorPassword,
+            'welcome'                                => !is_null($this->welcomeMessage) ? trim($this->welcomeMessage) : '',
             'dialNumber'                             => $this->dialNumber,
             'voiceBridge'                            => $this->voiceBridge,
-            'webVoice'                               => $this->webVoice,
+            'maxParticipants'                        => $this->maxParticipants,
+            'loginURL'                               => $this->loginUrl,
             'logoutURL'                              => $this->logoutUrl,
             'record'                                 => !is_null($this->record) ? ($this->record ? 'true' : 'false') : $this->record,
             'duration'                               => $this->duration,
-            'maxParticipants'                        => $this->maxParticipants,
+            // isBreakout parameters are listed below
+            'breakoutRoomsPrivateChatEnabled'        => !is_null($this->breakoutRoomsPrivateChatEnabled) ? ($this->breakoutRoomsPrivateChatEnabled ? 'true' : 'false') : $this->breakoutRoomsPrivateChatEnabled,
+            'breakoutRoomsRecord'                    => !is_null($this->breakoutRoomsRecord) ? ($this->breakoutRoomsRecord ? 'true' : 'false') : $this->breakoutRoomsRecord,
+            // meta params are processed below
+            'moderatorOnlyMessage'                   => !is_null($this->moderatorOnlyMessage) ? trim($this->moderatorOnlyMessage) : '',
             'autoStartRecording'                     => !is_null($this->autoStartRecording) ? ($this->autoStartRecording ? 'true' : 'false') : $this->autoStartRecording,
             'allowStartStopRecording'                => !is_null($this->allowStartStopRecording) ? ($this->allowStartStopRecording ? 'true' : 'false') : $this->allowStartStopRecording,
-            'welcome'                                => !is_null($this->welcomeMessage) ? trim($this->welcomeMessage) : '',
-            'moderatorOnlyMessage'                   => !is_null($this->moderatorOnlyMessage) ? trim($this->moderatorOnlyMessage) : '',
             'webcamsOnlyForModerator'                => !is_null($this->webcamsOnlyForModerator) ? ($this->webcamsOnlyForModerator ? 'true' : 'false') : $this->webcamsOnlyForModerator,
-            'logo'                                   => $this->logo,
-            'copyright'                              => $this->copyright,
+            'bannerText'                             => !is_null($this->bannerText) ? trim($this->bannerText) : '',
+            'bannerColor'                            => !is_null($this->bannerColor) ? trim($this->bannerColor) : '',
             'muteOnStart'                            => !is_null($this->muteOnStart) ? ($this->muteOnStart ? 'true' : 'false') : $this->muteOnStart,
-            'guestPolicy'                            => $this->guestPolicy,
+            'allowModsToUnmuteUsers'                 => !is_null($this->allowModsToUnmuteUsers) ? ($this->allowModsToUnmuteUsers ? 'true' : 'false') : $this->allowModsToUnmuteUsers,
+            // lock settings
             'lockSettingsDisableCam'                 => !is_null($this->lockSettingsDisableCam) ? ($this->lockSettingsDisableCam ? 'true' : 'false') : $this->lockSettingsDisableCam,
             'lockSettingsDisableMic'                 => !is_null($this->lockSettingsDisableMic) ? ($this->lockSettingsDisableMic ? 'true' : 'false') : $this->lockSettingsDisableMic,
             'lockSettingsDisablePrivateChat'         => !is_null($this->lockSettingsDisablePrivateChat) ? ($this->lockSettingsDisablePrivateChat ? 'true' : 'false') : $this->lockSettingsDisablePrivateChat,
             'lockSettingsDisablePublicChat'          => !is_null($this->lockSettingsDisablePublicChat) ? ($this->lockSettingsDisablePublicChat ? 'true' : 'false') : $this->lockSettingsDisablePublicChat,
-            'lockSettingsDisableNote'                => !is_null($this->lockSettingsDisableNote) ? ($this->lockSettingsDisableNote ? 'true' : 'false') : $this->lockSettingsDisableNote,
+            'lockSettingsDisableNotes'               => !is_null($this->lockSettingsDisableNote) ? ($this->lockSettingsDisableNote ? 'true' : 'false') : $this->lockSettingsDisableNote,
             'lockSettingsHideUserList'               => !is_null($this->lockSettingsHideUserList) ? ($this->lockSettingsHideUserList ? 'true' : 'false') : $this->lockSettingsHideUserList,
             'lockSettingsLockedLayout'               => !is_null($this->lockSettingsLockedLayout) ? ($this->lockSettingsLockedLayout ? 'true' : 'false') : $this->lockSettingsLockedLayout,
             'lockSettingsLockOnJoin'                 => !is_null($this->lockSettingsLockOnJoin) ? ($this->lockSettingsLockOnJoin ? 'true' : 'false') : $this->lockSettingsLockOnJoin,
             'lockSettingsLockOnJoinConfigurable'     => !is_null($this->lockSettingsLockOnJoinConfigurable) ? ($this->lockSettingsLockOnJoinConfigurable ? 'true' : 'false') : $this->lockSettingsLockOnJoinConfigurable,
             'lockSettingsHideViewersCursor'          => !is_null($this->lockSettingsHideViewersCursor) ? ($this->lockSettingsHideViewersCursor ? 'true' : 'false') : $this->lockSettingsHideViewersCursor,
-            'allowModsToUnmuteUsers'                 => !is_null($this->allowModsToUnmuteUsers) ? ($this->allowModsToUnmuteUsers ? 'true' : 'false') : $this->allowModsToUnmuteUsers,
-            'allowModsToEjectCameras'                => !is_null($this->allowModsToEjectCameras) ? ($this->allowModsToEjectCameras ? 'true' : 'false') : $this->allowModsToEjectCameras,
-            'bannerText'                             => !is_null($this->bannerText) ? trim($this->bannerText) : '',
-            'bannerColor'                            => !is_null($this->bannerColor) ? trim($this->bannerColor) : '',
-            'learningDashboardEnabled'               => !is_null($this->learningDashboardEnabled) ? ($this->learningDashboardEnabled ? 'true' : 'false') : $this->learningDashboardEnabled,
-            'virtualBackgroundsDisabled'             => !is_null($this->virtualBackgroundsDisabled) ? ($this->virtualBackgroundsDisabled ? 'true' : 'false') : $this->virtualBackgroundsDisabled,
-            'endWhenNoModeratorDelayInMinutes'       => $this->endWhenNoModeratorDelayInMinutes,
-            'allowRequestsWithoutSession'            => !is_null($this->allowRequestsWithoutSession) ? ($this->allowRequestsWithoutSession ? 'true' : 'false') : $this->allowRequestsWithoutSession,
-            'meetingEndedURL'                        => $this->meetingEndedURL,
-            'breakoutRoomsEnabled'                   => !is_null($this->breakoutRoomsEnabled) ? ($this->breakoutRoomsEnabled ? 'true' : 'false') : $this->breakoutRoomsEnabled,
-            'breakoutRoomsRecord'                    => !is_null($this->breakoutRoomsRecord) ? ($this->breakoutRoomsRecord ? 'true' : 'false') : $this->breakoutRoomsRecord,
-            'breakoutRoomsPrivateChatEnabled'        => !is_null($this->breakoutRoomsPrivateChatEnabled) ? ($this->breakoutRoomsPrivateChatEnabled ? 'true' : 'false') : $this->breakoutRoomsPrivateChatEnabled,
-            'endWhenNoModerator'                     => !is_null($this->endWhenNoModerator) ? ($this->endWhenNoModerator ? 'true' : 'false') : $this->endWhenNoModerator,
+
+            'guestPolicy'                            => $this->guestPolicy,
             'meetingKeepEvents'                      => !is_null($this->meetingKeepEvents) ? ($this->meetingKeepEvents ? 'true' : 'false') : $this->meetingKeepEvents,
+            'endWhenNoModerator'                     => !is_null($this->endWhenNoModerator) ? ($this->endWhenNoModerator ? 'true' : 'false') : $this->endWhenNoModerator,
+            'endWhenNoModeratorDelayInMinutes'       => $this->endWhenNoModeratorDelayInMinutes,
             'meetingLayout'                          => $this->meetingLayout,
-            'meetingCameraCap'                       => $this->meetingCameraCap,
+            // learningDashboardCleanupDelayInMinutes is processed below
+
+            'allowModsToEjectCameras'                => !is_null($this->allowModsToEjectCameras) ? ($this->allowModsToEjectCameras ? 'true' : 'false') : $this->allowModsToEjectCameras,
+            'allowRequestsWithoutSession'            => !is_null($this->allowRequestsWithoutSession) ? ($this->allowRequestsWithoutSession ? 'true' : 'false') : $this->allowRequestsWithoutSession,
             'userCameraCap'                          => $this->userCameraCap,
+            'meetingCameraCap'                       => $this->meetingCameraCap,
             'meetingExpireIfNoUserJoinedInMinutes'   => $this->meetingExpireIfNoUserJoinedInMinutes,
             'meetingExpireWhenLastUserLeftInMinutes' => $this->meetingExpireWhenLastUserLeftInMinutes,
-            'preUploadedPresentationOverrideDefault' => $this->preUploadedPresentationOverrideDefault,
+            // groups are processed below
+
+            'logo'                                   => $this->logo,
             'disabledFeatures'                       => join(',', $this->disabledFeatures),
             'disabledFeaturesExclude'                => join(',', $this->disabledFeaturesExclude),
+            'preUploadedPresentationOverrideDefault' => !is_null($this->preUploadedPresentationOverrideDefault) ? ($this->preUploadedPresentationOverrideDefault ? 'true' : 'false') : $this->preUploadedPresentationOverrideDefault,
             'notifyRecordingIsOn'                    => !is_null($this->notifyRecordingIsOn) ? ($this->notifyRecordingIsOn ? 'true' : 'false') : $this->notifyRecordingIsOn,
             'presentationUploadExternalUrl'          => $this->presentationUploadExternalUrl,
             'presentationUploadExternalDescription'  => $this->presentationUploadExternalDescription,
             'recordFullDurationMedia'                => !is_null($this->recordFullDurationMedia) ? ($this->recordFullDurationMedia ? 'true' : 'false') : $this->recordFullDurationMedia,
+            'preUploadedPresentation'                => $this->preUploadedPresentation,
+            'preUploadedPresentationName'            => $this->preUploadedPresentationName,
+            'allowOverrideClientSettingsOnCreateCall' => !is_null($this->allowOverrideClientSettingsOnCreateCall) ? ($this->allowOverrideClientSettingsOnCreateCall ? 'true' : 'false') : $this->allowOverrideClientSettingsOnCreateCall,
+            'clientSettingsOverride'                 => $this->clientSettingsOverride,
+            'allowPromoteGuestToModerator'           => !is_null($this->allowPromoteGuestToModerator) ? ($this->allowPromoteGuestToModerator ? 'true' : 'false') : $this->allowPromoteGuestToModerator,
+            'pluginManifests'                        => $this->pluginManifests,
+
+            'meetingEndedURL'                        => $this->meetingEndedURL,
+            'webVoice'                               => $this->webVoice,
         ];
 
         // Add breakout rooms parameters only if the meeting is a breakout room
